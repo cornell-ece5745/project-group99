@@ -26,7 +26,7 @@ def construct():
     'construct_path'  : __file__,
     'sim_path'        : "{}/../sim".format(this_dir),
     'design_path'     : "{}/../sim/tapeout".format(this_dir),
-    'design_name'     : 'SPI_TapeOutBlockRTL_32bits_5entries', 
+    'design_name'     : 'grp_99_SPI_TapeOutBlockRTL_32bits_5entries', 
     'clock_period'    : 2.0,
     'clk_port'        : 'clk',
     'reset_port'      : 'reset',
@@ -39,7 +39,7 @@ def construct():
     "template_name"   : "N/A",
 
     # VCS-sim
-    'test_design_name': 'SPI_TapeOutBlockRTL_32bits_5entries',
+    'test_design_name': 'grp_99_SPI_TapeOutBlockRTL_32bits_5entries',
     'waveform'        : True,
     'input_delay'     : 0.05,
     'output_delay'    : 0.05,
@@ -54,7 +54,7 @@ def construct():
     # 'setup_slack'     : 0.035,
 
     # PT Power
-    'saif_instance'   : 'SPI_TapeOutBlockRTL_32bits_5entries_tb/DUT',
+    'saif_instance'   : 'grp_99_SPI_TapeOutBlockRTL_32bits_5entries_tb/DUT',
 
     # Floorplan params
     'die_width'      : 960, # in um 
