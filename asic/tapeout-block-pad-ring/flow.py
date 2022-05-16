@@ -1,13 +1,57 @@
 #=========================================================================
-# TapeOutBlockRTL Flow.py No Pad Ring
+# TapeOutBlockRTL Flow.py 
 #=========================================================================
 # Author : Jack Brzozowski
-# Date   : May 16th, 2022
+# Date   : May 9th, 2022
 #
 
 import os
+import json
 
 from mflowgen.components import Graph, Step
+
+#==========================================================================
+# Pad Ring Customization
+#==========================================================================
+# Here, indicate the number of core vdd, core vss, io vdd, and io vss pads 
+# you have in your pad ring, as well as the total number of pads. 
+
+num_corevdd  = 9
+num_corevss  = 9
+num_iovdd    = 0
+num_iovss    = 0
+num_bondpads = 27   # 27 pin package
+
+# Here, layout which pads go where, in order, and on the proper side.
+# Make sure the total number of pads adds up to num_bondpads
+# Make sure that every pad that is NOT a VDD/VSS pad has the same name as the 
+# corresponding pad instance in your RTL code.
+# You do not need to give vdd/vss pads different names, just label those:
+# COREVDD
+# COREVSS
+# IOVDD
+# IOVSS
+
+# 8 x 6 pads, vertical x horizontal, east side has 7 to orient chip
+
+# These must exist from RTL:
+# reset_pad
+# cs_pad
+# mosi_pad
+# sclk_pad
+# clk_pad
+# miso_pad
+
+cells_west =  [ "COREVDD", "COREVSS", "COREVDD", "reset_pad", "cs_pad", "mosi_pad", "COREVDD", "COREVSS",]
+
+cells_north = [ "COREVSS", "clk_pad", "COREVSS", "COREVDD", "loopthrough_sel_pad", "COREVDD",]
+
+cells_east =  [ "COREVSS", "COREVDD", "minion_parity_pad", "adapter_parity_pad", "COREVSS", "COREVDD", "COREVSS",]
+
+cells_south = [ "sclk_pad", "COREVSS", "COREVDD", "miso_pad", "COREVSS", "COREVDD",]
+
+# === End Pad Ring Customization =========================================
+
 
 def construct():
 
@@ -26,20 +70,20 @@ def construct():
     'construct_path'  : __file__,
     'sim_path'        : "{}/../sim".format(this_dir),
     'design_path'     : "{}/../sim/tapeout".format(this_dir),
-    'design_name'     : 'SPI_TapeOutBlockRTL_32bits_5entries', 
+    'design_name'     : 'TapeOutBlockRTL__chip_top', 
     'clock_period'    : 2.0,
     'clk_port'        : 'clk',
     'reset_port'      : 'reset',
     'adk'             : adk_name,
     'adk_view'        : adk_view,
-    'pad_ring'        : False,
+    'pad_ring'        : True,
 
     # Block Gather
     "post_process"    : False,
     "template_name"   : "N/A",
 
     # VCS-sim
-    'test_design_name': 'SPI_TapeOutBlockRTL_32bits_5entries',
+    'test_design_name': 'grp_99_SPI_TapeOutBlockRTL_32bits_5entries',
     'waveform'        : True,
     'input_delay'     : 0.05,
     'output_delay'    : 0.05,
@@ -54,12 +98,23 @@ def construct():
     # 'setup_slack'     : 0.035,
 
     # PT Power
-    'saif_instance'   : 'SPI_TapeOutBlockRTL_32bits_5entries_tb/DUT',
+    'saif_instance'   : 'grp_99_SPI_TapeOutBlockRTL_32bits_5entries_tb/DUT',
 
     # Floorplan params
     'die_width'      : 960, # in um 
     'die_height'     : 1160,
 
+    # Pad Ring Params (customize above)
+    'num_corevdd'    : num_corevdd,
+    'num_corevss'    : num_corevss,
+    'num_iovdd'      : num_iovdd,
+    'num_iovss'      : num_iovss,
+    'num_bondpads'   : num_bondpads,
+
+    'cells_west'     : json.dumps(cells_west),
+    'cells_north'    : json.dumps(cells_north),
+    'cells_east'     : json.dumps(cells_east),
+    'cells_south'    : json.dumps(cells_south),
   } 
 
   #-----------------------------------------------------------------------
@@ -81,18 +136,18 @@ def construct():
 
   # Custom steps
 
-  info           = Step( 'info',                                     default=True )
-  gather         = Step( 'brgtc5-block-gather',                      default=True )
-  vcsSim         = Step( 'brg-synopsys-vcs-sim',                     default=True )
-  synth          = Step( 'brg-synopsys-dc-synthesis',                default=True )
-  init           = Step( 'brg-cadence-innovus-init',                 default=True )
-  floorplan      = Step( 'brg-cadence-innovus-blocksetup-floorplan', default=True )
-  powergrid      = Step( 'brg-cadence-innovus-blocksetup-power',     default=True )
-  pnr            = Step( 'brg-cadence-innovus-pnr',                  default=True )
-  signoff        = Step( 'brg-cadence-innovus-signoff',              default=True )
-  sta            = Step( 'brg-synopsys-pt-sta',                      default=True )
-  power          = Step( 'brg-synopsys-pt-power',                    default=True )
-  summary        = Step( 'brg-flow-summary',                         default=True )
+  info           = Step( 'info',                                 default=True )
+  gather         = Step( 'brgtc5-block-gather',                  default=True )
+  vcsSim         = Step( 'brg-synopsys-vcs-sim',                 default=True )
+  synth          = Step( 'brg-synopsys-dc-synthesis',            default=True )
+  init           = Step( 'brg-cadence-innovus-init',             default=True )
+  floorplan      = Step( 'brg-cadence-innovus-floorplan',        default=True )
+  powergrid      = Step( 'brg-cadence-innovus-power',            default=True )
+  pnr            = Step( 'brg-cadence-innovus-pnr',              default=True )
+  signoff        = Step( 'brg-cadence-innovus-signoff',          default=True )
+  sta            = Step( 'brg-synopsys-pt-sta',                  default=True )
+  power          = Step( 'brg-synopsys-pt-power',                default=True )
+  summary        = Step( 'brg-flow-summary',                     default=True )
 
   # Clone vcsSim
 
@@ -216,6 +271,11 @@ def construct():
 
   return g
 
+
 if __name__ == '__main__':
   g = construct()
+
+
+
+
 
