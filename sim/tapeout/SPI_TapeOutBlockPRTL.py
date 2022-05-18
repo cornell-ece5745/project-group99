@@ -17,6 +17,8 @@ from pymtl3.passes.backends.verilog import *
 from pymtl3.passes.backends.yosys import *
 
 from SPI_v3.components.SPIstackRTL import SPIstackRTL
+from SPI_v3.interfaces.SPIIfc import SPIMinionIfc
+from tapeout.BlockPlaceholderPRTL import BlockPlaceholderPRTL
 
 
 class SPI_TapeOutBlockPRTL( Component ):
@@ -33,11 +35,8 @@ class SPI_TapeOutBlockPRTL( Component ):
     #---------------------------------------------------------------------
     # Interface
     #---------------------------------------------------------------------
-    
-    s.cs              = InPort()
-    s.sclk            = InPort()
-    s.mosi            = InPort()
-    s.miso            = OutPort()
+
+    s.spi_min         = SPIMinionIfc()
     s.loopthrough_sel = InPort()
     s.minion_parity   = OutPort()
     s.adapter_parity  = OutPort()
@@ -47,10 +46,10 @@ class SPI_TapeOutBlockPRTL( Component ):
     #---------------------------------------------------------------------
     
     s.spi_min_stack = ms = SPIstackRTL(nbits + 2, num_entries)
-    ms.spi_min.cs      //= s.cs
-    ms.spi_min.sclk    //= s.sclk
-    ms.spi_min.mosi    //= s.mosi
-    ms.spi_min.miso    //= s.miso
+    ms.spi_min.cs      //= s.spi_min.cs
+    ms.spi_min.sclk    //= s.spi_min.sclk
+    ms.spi_min.mosi    //= s.spi_min.mosi
+    ms.spi_min.miso    //= s.spi_min.miso
     ms.loopthrough_sel //= s.loopthrough_sel
     ms.minion_parity   //= s.minion_parity
     ms.adapter_parity  //= s.adapter_parity

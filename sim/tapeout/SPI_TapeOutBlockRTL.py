@@ -21,6 +21,7 @@ from pymtl3.passes.backends.verilog import *
 from pymtl3.passes.backends.yosys import *
 
 from SPI_v3.components.SPIstackRTL import SPIstackRTL
+from SPI_v3.interfaces.SPIIfc import SPIMinionIfc
 
 class SPI_TapeOutBlockVRTL( VerilogPlaceholder, Component ):
 
@@ -37,10 +38,7 @@ class SPI_TapeOutBlockVRTL( VerilogPlaceholder, Component ):
     # Interface
     #---------------------------------------------------------------------
     
-    s.cs              = InPort()
-    s.sclk            = InPort()
-    s.mosi            = InPort()
-    s.miso            = OutPort()
+    s.spi_min         = SPIMinionIfc()
     s.loopthrough_sel = InPort()
     s.minion_parity   = OutPort()
     s.adapter_parity  = OutPort()
@@ -55,10 +53,10 @@ class SPI_TapeOutBlockVRTL( VerilogPlaceholder, Component ):
       s.minion_parity       : 'minion_parity',
       s.adapter_parity      : 'adapter_parity',
 
-      s.cs                  : 'cs',
-      s.mosi                : 'mosi',
-      s.miso                : 'miso',
-      s.sclk                : 'sclk',
+      s.spi_min.cs          : 'cs',
+      s.spi_min.mosi        : 'mosi',
+      s.spi_min.miso        : 'miso',
+      s.spi_min.sclk        : 'sclk',
     })
     
   #=======================================================================

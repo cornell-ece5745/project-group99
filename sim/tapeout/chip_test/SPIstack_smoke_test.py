@@ -18,9 +18,9 @@ def test_loopback( cmdline_opts ):
   dut.apply( DefaultPassGroup( linetrace=True ) )
 
   dut.loopthrough_sel @= 1 # Loopback mode
-  dut.cs          @= 1
-  dut.sclk        @= 0
-  dut.mosi        @= 0
+  dut.spi_min.cs          @= 1
+  dut.spi_min.sclk        @= 0
+  dut.spi_min.mosi        @= 0
   dut.sim_reset()
   
   # Test vectors
@@ -99,13 +99,13 @@ def test_loopback( cmdline_opts ):
 def t2( dut, cs, sclk, mosi, miso ):
 
   # Write input value to input port
-  dut.sclk        @= sclk
-  dut.cs          @= cs
-  dut.mosi        @= mosi
+  dut.spi_min.sclk        @= sclk
+  dut.spi_min.cs          @= cs
+  dut.spi_min.mosi        @= mosi
 
   dut.sim_eval_combinational()
 
-  assert dut.miso == miso
+  assert dut.spi_min.miso == miso
 
   # Tick simulator one cycle
   dut.sim_tick()
