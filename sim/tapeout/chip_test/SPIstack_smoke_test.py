@@ -13,7 +13,7 @@ from tapeout.SPI_TapeOutBlockRTL import SPI_TapeOutBlockRTL
 
 def test_loopback( cmdline_opts ):
 
-  dut = SPI_TapeOutBlockRTL( 2, 1 )
+  dut = SPI_TapeOutBlockRTL( 32, 1 )
   dut = config_model_with_cmdline_opts( dut, cmdline_opts, duts=[] )
   dut.apply( DefaultPassGroup( linetrace=True ) )
 
@@ -58,6 +58,22 @@ def test_loopback( cmdline_opts ):
   t2( dut,  0,    1,    1,    0 )
   t2( dut,  0,    1,    1,    0 )
   t2( dut,  0,    1,    1,    0 )
+  
+  for i in range(15):
+    t2( dut,  0,    0,    1,    0 ) #mosi_data = 11
+    t2( dut,  0,    0,    1,    0 ) 
+    t2( dut,  0,    0,    1,    0 )
+    t2( dut,  0,    1,    1,    0 )
+    t2( dut,  0,    1,    1,    0 )
+    t2( dut,  0,    1,    1,    0 )
+    # 3                                  
+    t2( dut,  0,    0,    1,    0 ) 
+    t2( dut,  0,    0,    1,    0 )
+    t2( dut,  0,    0,    1,    0 )
+    t2( dut,  0,    1,    1,    0 )
+    t2( dut,  0,    1,    1,    0 )
+    t2( dut,  0,    1,    1,    0 )
+  
 
 # cs high                                  
   t2( dut,  1,    0,    0,    0 )
@@ -80,20 +96,21 @@ def test_loopback( cmdline_opts ):
   t2( dut,  0,    1,    0,    1 )
   t2( dut,  0,    1,    0,    1 )
   t2( dut,  0,    1,    0,    1 )
-#  # 2                                  
-  t2( dut,  0,    0,    0,    1 ) #miso_data = 11
-  t2( dut,  0,    0,    0,    1 )
-  t2( dut,  0,    0,    0,    1 )
-  t2( dut,  0,    1,    0,    1 )
-  t2( dut,  0,    1,    0,    1 )
-  t2( dut,  0,    1,    0,    1 )
-#   # 3                                  
-  t2( dut,  0,    0,    0,    1 ) 
-  t2( dut,  0,    0,    0,    1 )
-  t2( dut,  0,    0,    0,    1 )
-  t2( dut,  0,    1,    0,    1 )
-  t2( dut,  0,    1,    0,    1 )
-  t2( dut,  0,    1,    0,    1 )
+#  # 2   
+  for i in range(16):                               
+    t2( dut,  0,    0,    0,    1 ) #miso_data = 11
+    t2( dut,  0,    0,    0,    1 )
+    t2( dut,  0,    0,    0,    1 )
+    t2( dut,  0,    1,    0,    1 )
+    t2( dut,  0,    1,    0,    1 )
+    t2( dut,  0,    1,    0,    1 )
+#     # 3                                  
+    t2( dut,  0,    0,    0,    1 ) 
+    t2( dut,  0,    0,    0,    1 )
+    t2( dut,  0,    0,    0,    1 )
+    t2( dut,  0,    1,    0,    1 )
+    t2( dut,  0,    1,    0,    1 )
+    t2( dut,  0,    1,    0,    1 )
 
 # Helper function
 def t2( dut, cs, sclk, mosi, miso ):

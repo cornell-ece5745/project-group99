@@ -19,6 +19,7 @@ from pymtl3.passes.backends.yosys import *
 from SPI_v3.components.SPIstackRTL import SPIstackRTL
 from SPI_v3.interfaces.SPIIfc import SPIMinionIfc
 from tapeout.BlockPlaceholderPRTL import BlockPlaceholderPRTL
+from tut3_pymtl.gcd.GcdUnitRTL import GcdUnitRTL
 
 
 class SPI_TapeOutBlockPRTL( Component ):
@@ -60,6 +61,19 @@ class SPI_TapeOutBlockPRTL( Component ):
 
     # ms.recv //=  #Connect to this interface
     # ms.send //=  #Connect to this interface
+
+    s.gcd = GcdUnitRTL()
+    @update
+    def combinational():
+      s.gcd.recv.msg              @= s.spi_min_stack.send.msg
+      s.gcd.recv.val              @= s.spi_min_stack.send.val
+      s.spi_min_stack.send.rdy    @= s.gcd.recv.rdy
+      s.spi_min_stack.recv.msg    @= sext(s.gcd.send.msg,32)
+      s.spi_min_stack.recv.val    @= s.gcd.send.val
+      s.gcd.send.rdy              @= s.spi_min_stack.recv.rdy
+
+
+
     
   #=======================================================================
   # Line tracing

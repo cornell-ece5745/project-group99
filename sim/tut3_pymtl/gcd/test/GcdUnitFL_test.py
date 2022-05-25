@@ -70,7 +70,7 @@ for a, b, result in basic_cases:
 #-------------------------------------------------------------------------
 
 random_cases = []
-for i in range(30):
+for i in range(20):
   a = random.randint(0,0xffff)
   b = random.randint(0,0xffff)
   c = gcd( a, b )
