@@ -24,8 +24,8 @@ def construct():
 
   parameters = {
     'construct_path'  : __file__,
-    'sim_path'        : "{}/../sim".format(this_dir),
-    'design_path'     : "{}/../sim/tapeout".format(this_dir),
+    'sim_path'        : "{}/../../sim".format(this_dir),
+    'design_path'     : "{}/../../sim/tapeout".format(this_dir),
     'design_name'     : 'grp_99_SPI_TapeOutBlockRTL_32bits_5entries', 
     'clock_period'    : 2.0,
     'clk_port'        : 'clk',
