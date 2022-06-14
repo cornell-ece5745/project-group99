@@ -90,7 +90,7 @@ test_case_table = mk_test_case_table([
   [ "basic_5x0",  basic_msgs,  5,         0,         ],
   [ "basic_0x5",  basic_msgs,  0,         5,         ],
   [ "basic_3x9",  basic_msgs,  3,         9,         ],
-  [ "random_3x9", random_msgs, 3,         9,         ],
+#   [ "random_3x9", random_msgs, 3,         9,         ],
 ])
 #-------------------------------------------------------------------------
 # Test cases

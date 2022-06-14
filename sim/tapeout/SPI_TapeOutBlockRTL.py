@@ -78,6 +78,7 @@ if hasattr( sys, '_called_from_test' ):
 if rtl_language == 'pymtl':
   from .SPI_TapeOutBlockPRTL import SPI_TapeOutBlockPRTL as SPI_TapeOutBlockRTL
 elif rtl_language == 'verilog':
-  SPI_TapeOutBlockRTL = SPI_TapeOutBlockVRTL
+#   SPI_TapeOutBlockRTL = SPI_TapeOutBlockVRTL
+  from .grp_99_SPI_TapeOutBlockRTL_32bits_5entries_from_verilog import grp_99_SPI_TapeOutBlockRTL_32bits_5entries_from_verilog as SPI_TapeOutBlockRTL
 else:
   raise Exception("Invalid RTL language!")
