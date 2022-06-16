@@ -112,4 +112,4 @@ if hasattr( sys, '_called_from_test' ):
 # else:
 #   raise Exception("Invalid RTL language!")
 
-SPI_TapeOutBlockRTL = SPI_TapeOutBlockVRTL
+SPI_TapeOutBlockRTL = SPI_TapeOutBlockVRTL_sv2v
