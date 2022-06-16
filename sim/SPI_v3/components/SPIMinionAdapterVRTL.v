@@ -14,30 +14,31 @@ module SPI_v3_components_SPIMinionAdapterVRTL
   input  logic                    pull_en,
   output logic                    pull_msg_val,
   output logic                    pull_msg_spc,
-  output logic [nbits-1:0]        pull_msg_data,
+  output logic [nbits-3:0]        pull_msg_data,
   input  logic                    push_en,
   input  logic                    push_msg_val_wrt,
   input  logic                    push_msg_val_rd,
-  input  logic [nbits-1:0]        push_msg_data,
+  input  logic [nbits-3:0]        push_msg_data,
   input  logic [nbits-3:0]        recv_msg,
   output logic                    recv_rdy,
   input  logic                    recv_val,
   output logic [nbits-3:0]        send_msg,
   input  logic                    send_rdy,
   output logic                    send_val,
-  output logic                    parity  
+  output logic                    parity
 );
 
   logic open_entries;
 
+  logic [$clog2(num_entries):0] cm_q_num_free;
   logic [nbits-3:0]             cm_q_send_msg;
   logic                         cm_q_send_rdy;
   logic                         cm_q_send_val;
 
-  vc_Queue #(4'b0, nbits, num_entries) cm_q
+  vc_Queue #(4'b0, nbits-2, num_entries) cm_q
   (
     .clk( clk ),
-    .num_free_entries( ),
+    .num_free_entries( cm_q_num_free ),
     .reset( reset ),
     .recv_msg( recv_msg ),
     .recv_rdy( recv_rdy ),
@@ -51,7 +52,7 @@ module SPI_v3_components_SPIMinionAdapterVRTL
   logic                         mc_q_recv_rdy;
   logic                         mc_q_recv_val;
 
-  vc_Queue #(4'b0, nbits, num_entries) mc_q
+  vc_Queue #(4'b0, nbits-2, num_entries) mc_q
   (
     .clk( clk ),
     .num_free_entries( mc_q_num_free ),
@@ -65,7 +66,7 @@ module SPI_v3_components_SPIMinionAdapterVRTL
   );
 
   assign parity = (^send_msg) & send_val;
-  
+
   always_comb begin : comb_block
     open_entries = mc_q_num_free > 1;
     mc_q_recv_val = push_msg_val_wrt & push_en;

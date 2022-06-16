@@ -10,6 +10,7 @@
 
 `include "SPI_v3/components/SPIstackVRTL.v"
 `include "tapeout/BlockPlaceholderVRTL.v"
+`include "tut4_verilog/gcd/GcdUnitRTL.v"
 // ADD INCLUDES HERE FOR YOUR MODULE
 
 module tapeout_SPI_TapeOutBlockVRTL
@@ -25,13 +26,14 @@ module tapeout_SPI_TapeOutBlockVRTL
     output logic adapter_parity,
 
     // SPI Minion Ifc
-    input  logic sclk,
-    input  logic cs,
-    input  logic mosi,
-    output logic miso
+    input  logic spi_min_sclk,
+    input  logic spi_min_cs,
+    input  logic spi_min_mosi,
+    output logic spi_min_miso
 );
 
 parameter packet_nbits = nbits - 2; //remove control flow bits
+parameter gcd_msg_size = packet_nbits/2;
 
 logic                    send_val;
 logic [packet_nbits-1:0] send_msg;
@@ -39,22 +41,31 @@ logic                    send_rdy;
 
 logic                    recv_val; 
 logic [packet_nbits-1:0] recv_msg;
+logic [gcd_msg_size-1:0]             gcd_msg;
 logic                    recv_rdy;
+
+logic reset_presync;
+logic reset_sync;
+
+always_ff @(posedge clk) begin
+  reset_presync <= reset;
+  reset_sync    <= reset_presync;
+end
 
 // We add two to nbits for the two SPI minion flow control bits 
 SPI_v3_components_SPIstackVRTL #(nbits, num_entries) SPIstack
 (
     .clk(clk),
-    .reset(reset),
+    .reset(reset_sync),
     .loopthrough_sel(loopthrough_sel),
     .minion_parity(minion_parity),
     .adapter_parity(adapter_parity),
 
     // SPI Minion Ifc
-    .sclk(sclk),
-    .cs(cs),
-    .mosi(mosi),
-    .miso(miso),
+    .sclk(spi_min_sclk),
+    .cs(spi_min_cs),
+    .mosi(spi_min_mosi),
+    .miso(spi_min_miso),
 
     // Send/Recv Ifc
     .send_val(send_val),
@@ -70,16 +81,33 @@ SPI_v3_components_SPIstackVRTL #(nbits, num_entries) SPIstack
 // TAPEOUT TASK: Instantiate your module below and connect it to the SPI stack
 //=============================================================================
 
-tapeout_BlockPlaceholderVRTL #(packet_nbits) Placeholder
-(
-    // Send/Recv Ifc
-    .send_val(send_val),
-    .send_msg(send_msg),
-    .send_rdy(send_rdy),
+// tapeout_BlockPlaceholderVRTL #(packet_nbits) Placeholder
+// (
+//     // Send/Recv Ifc
+//     .send_val(send_val),
+//     .send_msg(send_msg),
+//     .send_rdy(send_rdy),
 
-    .recv_val(recv_val), 
-    .recv_msg(recv_msg), 
-    .recv_rdy(recv_rdy)
+//     .recv_val(recv_val), 
+//     .recv_msg(recv_msg), 
+//     .recv_rdy(recv_rdy)
+// );
+
+always @(*) begin
+    recv_msg = { {(gcd_msg_size){gcd_msg[gcd_msg_size-1]}}, gcd_msg };
+end
+
+tut4_verilog_gcd_GcdUnitRTL GCD (
+  .clk      (clk),
+  .reset    (reset_sync),
+  .recv_val (send_val),
+  .recv_rdy (send_rdy),
+  .recv_msg (send_msg),
+  .send_val (recv_val),
+  .send_rdy (recv_rdy),
+  .send_msg (gcd_msg)
 );
+
+
 
 endmodule

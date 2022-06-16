@@ -53,10 +53,10 @@ class SPI_TapeOutBlockVRTL( VerilogPlaceholder, Component ):
       s.minion_parity       : 'minion_parity',
       s.adapter_parity      : 'adapter_parity',
 
-      s.spi_min.cs          : 'cs',
-      s.spi_min.mosi        : 'mosi',
-      s.spi_min.miso        : 'miso',
-      s.spi_min.sclk        : 'sclk',
+      s.spi_min.cs          : 'spi_min_cs',
+      s.spi_min.mosi        : 'spi_min_mosi',
+      s.spi_min.miso        : 'spi_min_miso',
+      s.spi_min.sclk        : 'spi_min_sclk',
     })
     
   #=======================================================================
@@ -67,6 +67,35 @@ class SPI_TapeOutBlockVRTL( VerilogPlaceholder, Component ):
 
     return ""
 
+class SPI_TapeOutBlockVRTL_sv2v( VerilogPlaceholder, Component ):
+
+  def construct( s ):
+
+    s.set_metadata( VerilogTranslationPass.explicit_module_name, f'grp_99_SPI_TapeOutBlockRTL_32bits_5entries' )
+    s.set_metadata( YosysTranslationPass.explicit_module_name,   f'grp_99_SPI_TapeOutBlockRTL_32bits_5entries' )
+
+    s.spi_min         = SPIMinionIfc()
+    s.loopthrough_sel = InPort()
+    s.minion_parity   = OutPort()
+    s.adapter_parity  = OutPort()
+
+    # s.clk_en          = OutPort()
+    # s.reset_en        = OutPort()
+    # s.lt_sel_en       = OutPort()
+    # s.mp_en           = OutPort()
+    # s.ap_en           = OutPort()
+    # s.cs_en           = OutPort()
+    # s.sclk_en         = OutPort()
+    # s.miso_en         = OutPort()
+    # s.mosi_en         = OutPort()
+
+    s.set_metadata( VerilogPlaceholderPass.port_map, {
+      s.spi_min.cs          : 'spi_min_cs',
+      s.spi_min.mosi        : 'spi_min_mosi',
+      s.spi_min.miso        : 'spi_min_miso',
+      s.spi_min.sclk        : 'spi_min_sclk',
+    })
+
 # For to force testing a specific RTL language
 import sys
 if hasattr( sys, '_called_from_test' ):
@@ -75,10 +104,12 @@ if hasattr( sys, '_called_from_test' ):
 
 # Import the appropriate version based on the rtl_language variable
 
-if rtl_language == 'pymtl':
-  from .SPI_TapeOutBlockPRTL import SPI_TapeOutBlockPRTL as SPI_TapeOutBlockRTL
-elif rtl_language == 'verilog':
+# if rtl_language == 'pymtl':
+#   from .SPI_TapeOutBlockPRTL import SPI_TapeOutBlockPRTL as SPI_TapeOutBlockRTL
+# elif rtl_language == 'verilog':
 #   SPI_TapeOutBlockRTL = SPI_TapeOutBlockVRTL
-  from .grp_99_SPI_TapeOutBlockRTL_32bits_5entries_from_verilog import grp_99_SPI_TapeOutBlockRTL_32bits_5entries_from_verilog as SPI_TapeOutBlockRTL
-else:
-  raise Exception("Invalid RTL language!")
+# #   from .grp_99_SPI_TapeOutBlockRTL_32bits_5entries_from_verilog import grp_99_SPI_TapeOutBlockRTL_32bits_5entries_from_verilog as SPI_TapeOutBlockRTL
+# else:
+#   raise Exception("Invalid RTL language!")
+
+SPI_TapeOutBlockRTL = SPI_TapeOutBlockVRTL_sv2v

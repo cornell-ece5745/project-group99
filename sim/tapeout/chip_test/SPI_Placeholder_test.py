@@ -19,20 +19,20 @@ from tapeout.SPI_TapeOutBlockRTL import SPI_TapeOutBlockRTL
 # Test cases
 #-------------------------------------------------------------------------
 
-@pytest.mark.parametrize( **test_case_table )
-def test_gcd_rtl( test_params, cmdline_opts ):
-  harness = SPITestHarness(SPI_TapeOutBlockRTL(32, 5),    1,           34,   cmdline_opts)
+# @pytest.mark.parametrize( **test_case_table )
+# def test_gcd_rtl( test_params, cmdline_opts ):
+#   harness = SPITestHarness(SPI_TapeOutBlockRTL(32, 5),    1,           34,   cmdline_opts)
 
-  harness.dut.loopthrough_sel @= 0 # passthrough mode
+#   harness.dut.loopthrough_sel @= 0 # passthrough mode
 
-  requests  = [] # Create empty list for requests
-  responses = [] # Create empty list for responses
+#   requests  = [] # Create empty list for requests
+#   responses = [] # Create empty list for responses
 
-  requests  = test_params.msgs[::2]
+#   requests  = test_params.msgs[::2]
 
-  for i in range(len(requests)):
-      requests[i] = concat(requests[i].a, requests[i].b)
+#   for i in range(len(requests)):
+#       requests[i] = concat(requests[i].a, requests[i].b)
   
-  responses = requests
+#   responses = requests
 
-  harness.t_mult_msg(32, requests, 32, responses)
+#   harness.t_mult_msg(32, requests, 32, responses)

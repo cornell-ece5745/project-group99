@@ -13,7 +13,7 @@ from tapeout.SPI_TapeOutBlockRTL import SPI_TapeOutBlockRTL
 
 def test_loopback( cmdline_opts ):
 
-  dut = SPI_TapeOutBlockRTL( 32, 1 )
+  dut = SPI_TapeOutBlockRTL()
   dut = config_model_with_cmdline_opts( dut, cmdline_opts, duts=[] )
   dut.apply( DefaultPassGroup( linetrace=True ) )
 
