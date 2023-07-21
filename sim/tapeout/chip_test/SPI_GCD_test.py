@@ -3,6 +3,7 @@
 #=========================================================================
 
 import pytest
+import os
 
 from pymtl3 import *
 from pymtl3.stdlib.test_utils import run_sim
@@ -43,4 +44,5 @@ def test_gcd_rtl( cmdline_opts ):
 #   requests, responses = get_req_resp("/home/acm289/project-group99/sim/tapeout/chip_test/GCD_Data.txt")
 
 #   harness.t_mult_msg(32, requests, 32, responses)
-  harness.test_and_dump("/home/acm289/project-group99/sim/tapeout/chip_test/GCD_Data.txt", 32, 32, "messages.txt")
+  file_dir = os.path.dirname(os.path.realpath(__file__))
+  harness.test_and_dump( os.path.join( file_dir, "GCD_Data.txt" ), 32, 32, "messages.txt")
