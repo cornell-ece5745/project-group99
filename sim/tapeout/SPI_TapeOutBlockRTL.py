@@ -20,7 +20,7 @@ from pymtl3.stdlib.stream.ifcs import RecvIfcRTL, SendIfcRTL
 from pymtl3.passes.backends.verilog import *
 from pymtl3.passes.backends.yosys import *
 
-from SPI_v3.components.SPIstackRTL import SPIstackRTL
+from SPI_v3.components.SPIStackRTL import SPIStackRTL
 from SPI_v3.interfaces.SPIIfc import SPIMinionIfc
 
 class SPI_TapeOutBlockVRTL( VerilogPlaceholder, Component ):
